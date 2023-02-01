@@ -45,6 +45,7 @@ export async function get_setup_values() {
   await factory.createOrderBook(token0.address, token1.address, 2, 1);
 
   return {
+    factory,
     router,
     token0,
     token1,
@@ -57,7 +58,7 @@ export async function get_setup_values() {
 }
 
 export async function setup_and_deposit_in_vault_fixture() {
-  const { router, token0, token1, owner, acc1, acc2, sizeTick, priceTick } =
+  const { factory, router, token0, token1, owner, acc1, acc2, sizeTick, priceTick } =
     await get_setup_values();
 
   await token0.mint(acc1.getAddress(), "10000000000000");
@@ -71,6 +72,7 @@ export async function setup_and_deposit_in_vault_fixture() {
   await token1.connect(acc2).approve(router.address, "10000000000000");
 
   return {
+    factory,
     router,
     token0,
     token1,
