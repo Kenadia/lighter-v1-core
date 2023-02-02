@@ -5,9 +5,9 @@ import { ethers } from 'hardhat'
 
 import { MaliciousErc1820Hook__factory } from '../typechain-types'
 import { fundAndImpersonate, impersonate } from './helpers/evm'
+import { setup_and_deposit_in_vault_fixture } from './helpers/fixtures'
 import { createLimitOrder, createOrderBook } from './helpers/orderBook'
 import { ERC1820_AMP_TOKENS_RECIPIENT, ERC1820_INTF, fundErc20, getErc20, MAINNET_AMP, MAINNET_ERC1820, MAINNET_USDC, MAINNET_USDC_BLACKLISTER, MAINNET_USDT, USDC_INTF, USDT_INTF } from './helpers/tokens'
-import { setup_and_deposit_in_vault_fixture } from './UpdateLimitOrder'
 
 describe('Findings', () => {
   if (!process.env.FORK) {
