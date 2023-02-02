@@ -320,4 +320,54 @@ describe('Findings', () => {
     expect(balanceAfter1.eq(balanceBefore1)).to.equal(false);
     expect(balanceAfter2.gt(balanceBefore2)).to.equal(true);
   });
+
+  /**
+   * Likelihood: Low
+   * Impact: Low
+   *
+   * Description: Under certain conditions, it may be possible for users to
+   *  temporarily block trading on one side or the other of the order book,
+   *  by placing a large number of small orders. This can be used as a tactic
+   *  for market manipulation.
+   *
+   *  The likelihood and impact of this attack depend on various factors,
+   *  including the value of the size tick, fluctuations in gas price, and
+   *  which blockchain is being used. Note that since the size tick of an
+   *  order book is immutable, the value of the tick, in relative terms,
+   *  may drift over time, meaning this problem could eventually arise on
+   *  a given market even if it was not initially a problem.
+   *
+   * This test is skipped by default because it takes several seconds to run.
+   */
+  it.skip('Order book DoS by creating many small orders', async () => {
+    const { router, acc1, acc2 } = await loadFixture(
+      setup_and_deposit_in_vault_fixture
+    );
+
+    // Malicious user creates many small asks.
+    const orderBookId = 0;
+    for (let i = 0; i < 5; i++) {
+      await router.connect(acc1).createLimitOrderBatch(
+        orderBookId,
+        200,
+        new Array(200).fill(1),
+        new Array(200).fill(1),
+        new Array(200).fill(true),
+        new Array(200).fill(1),
+      );
+    }
+
+    // Bids above a certain quantity will fail, depending on the block gas limit
+    // of the blockchain.
+    //
+    // Each order costs ~30,000 gas to be filled.
+    await expect(
+      router.connect(acc2).createMarketOrder(
+        orderBookId,
+        1000,
+        1,
+        false,
+      )
+    ).to.be.rejectedWith('contract call run out of gas and made the transaction revert');
+  });
 })
