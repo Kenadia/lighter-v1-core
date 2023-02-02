@@ -5,9 +5,11 @@ import { HardhatUserConfig } from "hardhat/config";
 import { HardhatNetworkUserConfig, HttpNetworkUserConfig } from "hardhat/types";
 
 // Throw-away key.
-const ALCHEMY_KEY = 'asKzBAStzKF-PeLfUIXc2zpj0kf7vM1a'
+const ALCHEMY_KEY = 'asKzBAStzKF-PeLfUIXc2zpj0kf7vM1a';
 
-function getHardhatConfig() {
+const DEFAULT_FORK_BLOCK_NUMBER = 16541000;
+
+function getHardhatConfig(): HardhatNetworkUserConfig {
   const networkConfig: HardhatNetworkUserConfig = {
     allowUnlimitedContractSize: true,
   };
@@ -17,9 +19,12 @@ function getHardhatConfig() {
     networkConfig.chainId = 1;
     networkConfig.forking = {
       url: `https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`,
+      blockNumber: Number(process.env.FORK_BLOCK_NUMBER ?? DEFAULT_FORK_BLOCK_NUMBER),
     };
     (networkConfig as HttpNetworkUserConfig).timeout = 0;
   }
+
+  return networkConfig;
 }
 
 const config: HardhatUserConfig = {
