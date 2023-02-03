@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "test": "FORK=true npx hardhat test"
+  },
   "devDependencies": {
     "@defi-wonderland/smock": "^2.2.0",
     "@ethersproject/abi": "^5.6.4",
